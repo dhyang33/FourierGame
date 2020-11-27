@@ -4,9 +4,17 @@ import librosa
 import time
 import soundfile
 import random
+import matplotlib
+import matplotlib.pyplot as plt
+import scipy
+import scipy.fftpack
+matplotlib.use("Agg")
+import matplotlib.backends.backend_agg as agg
+import pylab
 from sprite import *
-class PitchGame:
+class PitchGame2:
     orig_sound = []
+    score = None
     num_pitches = -1
     possible_pitches = {"C4":262,
                            "D4":293,
@@ -23,6 +31,8 @@ class PitchGame:
                            "A5":880,
                            "B5":989}
     notes = []
+    DFT1 = None
+    DFT2 = None
     def __init__(self,num_pitches):
         self.num_pitches = num_pitches
         self.notes = []
@@ -32,7 +42,6 @@ class PitchGame:
             self.notes = random.sample(self.possible_pitches.keys(),self.num_pitches)
         print(self.notes)
         freqs = [self.possible_pitches[note] for note in self.notes]
-        print(freqs)
         amplitudes = []
         for i in range(len(freqs)):
             #random_amp = random.random()
@@ -45,6 +54,8 @@ class PitchGame:
                 self.orig_sound = note
             else:
                 self.orig_sound += note
+        self.DFT1 = np.abs(scipy.fftpack.fft(self.orig_sound[:22050]))
+        self.DFT2 = self.DFT1[:1000]
         
     def pitchMaker(self,frequency=262,magnitude = 1,time = 1,sr = 22050):
         t = np.arange(0, time,1/sr)
@@ -96,6 +107,23 @@ class PitchGame:
                     next_idx = len(values)-1
                 next_freq = str(values[next_idx])+" Hz"
         return next_freq
+    
+    def scoreGuess(self,sprites):
+        freqs_guess = [int(sprites['b1'].text.split(" ")[0]),int(sprites['b2'].text.split(" ")[0]),int(sprites['b3'].text.split(" ")[0])]
+        freqs_guess = sorted(freqs_guess)
+        freqs_gt = sorted([self.possible_pitches[note] for note in self.notes])
+        guess = []
+        gt = []
+        frequencies = sorted(self.possible_pitches.values())
+        for freq in freqs_guess:
+            guess.append(frequencies.index(freq))
+        for freq in freqs_gt:
+            gt.append(frequencies.index(freq))
+        score = np.abs(guess[0]-gt[0])+ np.abs(guess[1]-gt[1])+ np.abs(guess[2]-gt[2])
+        points = (20-score)*50
+        if points < 0:
+            points = 0
+        return points
 
     def buttonListener(self,clicked_sprites,sprites):
         if 'soundIcon' in clicked_sprites:
@@ -122,6 +150,8 @@ class PitchGame:
         if 'play' in clicked_sprites:
             #sprites['play'].timedColorChange((225,0,0),30)
             self.playConstructed(sprites)
+        if 'score' in clicked_sprites:
+            self.score = self.scoreGuess(sprites)
         return sprites
        
         
@@ -183,14 +213,75 @@ class PitchGame:
         width = 70
         X = middle_X
         Y = 680
-        r = pygame.Rect(X-length/2, Y, length, width)
-        playButton = Sprite(rect = r, rectColor = (255,0,0), text = "Test Sound", textPos = (X-length/2, Y+10), textColor = (0,0,0))
+        r = pygame.Rect(X-3*length/2, Y, length, width)
+        playButton = Sprite(rect = r, rectColor = (255,0,0), text = "Test Sound", textPos = (X-3*length/2, Y+10), textColor = (0,0,0))
         return playButton
+    
+    def getScoreSprite(self,middle_X):
+        length = 250
+        width = 70
+        X = middle_X
+        Y = 680
+        offset = 32
+        r = pygame.Rect(X+length/2-offset/2, Y, length+offset*2, width)
+        playButton = Sprite(rect = r, rectColor = (0,255,0), text = "Submit Sound", textPos = (X+length/2-offset/2, Y+10), textColor = (0,0,0))
+        return playButton
+    
+    def getGraphSprite1(self, middle_X):
+        fig = pylab.figure(figsize=[6, 4], # Inches
+                   dpi=100,        # 100 dots per inch, so the resulting buffer is 400x400 pixels
+                   )
+        ax = fig.gca()
+        ax.plot(self.DFT1)
+        ax.set_xlabel('Frequency (HZ)')
+        ax.set_ylabel('Magnitude of X_k')
+        ax.set_title("DFT of Sound Signal")
+        
+        canvas = agg.FigureCanvasAgg(fig)
+        canvas.draw()
+        renderer = canvas.get_renderer()
+        raw_data = renderer.tostring_rgb()
+        size = canvas.get_width_height()
+        img = pygame.image.fromstring(raw_data, size, "RGB")
+        
+        offset_X = 20
+        offset_Y = 20
+        r = pygame.Rect(0,0,1,1)
+        graphSprite = Sprite(rect = r, rectColor = (173, 216, 230),image = img, imagePos = (offset_X,offset_Y))
+        return graphSprite
+    
+    def getGraphSprite2(self, middle_X):
+        fig = pylab.figure(figsize=[6, 4], # Inches
+                   dpi=100,        # 100 dots per inch, so the resulting buffer is 400x400 pixels
+                   )
+        ax = fig.gca()
+        ax.plot(self.DFT2)
+        ax.set_xlabel('Frequency (HZ)')
+        ax.set_ylabel('Magnitude of X_k')
+        ax.set_title("Zoomed In DFT of Sound Signal")
+        
+        canvas = agg.FigureCanvasAgg(fig)
+        canvas.draw()
+        renderer = canvas.get_renderer()
+        raw_data = renderer.tostring_rgb()
+        size = canvas.get_width_height()
+        img = pygame.image.fromstring(raw_data, size, "RGB")
+        
+        offset_X = 1360-20-600
+        offset_Y = 20
+        r = pygame.Rect(0,0,1,1)
+        graphSprite = Sprite(rect = r, rectColor = (173, 216, 230),image = img, imagePos = (offset_X,offset_Y))
+        return graphSprite
+
     
     def defineSprites(self, middle_X, middle_Y):
         sprites = {}
-        soundIcon = self.getSoundSprite(middle_X)
-        sprites = self.add_sprite("soundIcon",soundIcon, sprites)
+        
+        graph = self.getGraphSprite1(middle_X)
+        sprites = self.add_sprite("graph1",graph,sprites)
+        
+        graph = self.getGraphSprite2(middle_X)
+        sprites = self.add_sprite("graph2",graph,sprites)
         
         buttons = self.getPitchSprites(middle_X)
         for idx, button in enumerate(buttons):
@@ -206,9 +297,12 @@ class PitchGame:
         
         playSprite = self.getPlaySprite(middle_X)
         sprites = self.add_sprite("play",playSprite,sprites)
+        
+        scoreSprite = self.getScoreSprite(middle_X)
+        sprites = self.add_sprite("score",scoreSprite,sprites)
         return sprites
     
-    def run(self):
+    def run(self,screen):
         pygame.font.init() 
         pygame.mixer.init()
         pygame.init()
@@ -216,10 +310,6 @@ class PitchGame:
         X,Y = 1360,768
         middle_X = X/2
         middle_Y = Y/2
-
-        # Set up the drawing window
-        screen = pygame.display.set_mode([X, Y])
-        pygame.display.set_caption('Fourier Game') 
         
         # Define sprites
         sprites = self.defineSprites(middle_X, middle_Y)
@@ -227,6 +317,9 @@ class PitchGame:
         # Run until the user asks to quit
         running = True
         while running:
+            if self.score!=None:
+                pygame.display.flip()
+                break
 
             # Did the user click the window close button?
             for event in pygame.event.get():
@@ -236,7 +329,8 @@ class PitchGame:
                     sprites = self.buttonListener(clicked_sprites,sprites)
 
                 if event.type == pygame.QUIT:
-                    running = False
+                    pygame.quit()
+                    break
 
             # Fill the background with white
             screen.fill((173, 216, 230))
@@ -250,6 +344,3 @@ class PitchGame:
 
             # Flip the display
             pygame.display.flip()
-
-        # Done! Time to quit.
-        pygame.quit()
