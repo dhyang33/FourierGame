@@ -8,8 +8,9 @@ This game was made for the HMC Math131 Capstone Project.
 
 ## Installation
 
-1. Install [Python 3][python]. Make sure you have pip (the python package
-   manager) installed.
+1. Install [Python 3.8][python]. Do not use 3.9, since one of our
+   dependencies does not support 3.9 yet. Make sure you have pip
+   (the python package manager) installed.
 
 2. Install the required dependencies with the following command:
     ```bash
@@ -25,5 +26,5 @@ This game was made for the HMC Math131 Capstone Project.
     python game.py
     ```
 
-[python]: https://www.python.org/downloads/
+[python]: https://www.python.org/downloads/release/python-386/
 [code]: https://github.com/dhyang33/FourierGame/archive/main.zip
