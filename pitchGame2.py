@@ -11,7 +11,18 @@ import scipy.fftpack
 matplotlib.use("Agg")
 import matplotlib.backends.backend_agg as agg
 import pylab
+import os
+import sys
 from sprite import *
+
+def resource_path(relative_path):
+    try:
+    # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 class PitchGame2:
     orig_sound = []
     score = None
@@ -67,8 +78,8 @@ class PitchGame2:
     
     def playSound(self,data,sr=22050):
         fself.clicked = True
-        soundfile.write("orig_sound.wav",data,sr)
-        sound = pygame.mixer.Sound('orig_sound.wav')
+        soundfile.write(resource_path("orig_sound.wav"),data,sr)
+        sound = pygame.mixer.Sound(resource_path('orig_sound.wav'))
         sound.set_volume(0.5)
         sound.play()
         time.sleep(4)
@@ -83,8 +94,8 @@ class PitchGame2:
         data3 = np.array(self.pitchMaker(freq3,time=2))
         data = data1+data2+data3
         self.clicked = True
-        soundfile.write("constructed_sound.wav",data,sr)
-        sound = pygame.mixer.Sound('constructed_sound.wav')
+        soundfile.write(resource_path("constructed_sound.wav"),data,sr)
+        sound = pygame.mixer.Sound(resource_path('constructed_sound.wav'))
         sound.set_volume(0.5)
         sound.play()
         time.sleep(4)
@@ -165,7 +176,7 @@ class PitchGame2:
     def getSoundSprite(self,middle_X):
         X = middle_X
         Y = 200
-        soundIcon_image = pygame.image.load('sound.png')
+        soundIcon_image = pygame.image.load(resource_path('sound.png'))
         soundIcon_image = pygame.transform.scale(soundIcon_image, (100,100))
         soundIcon_rect = soundIcon_image.get_rect().size
         r = pygame.Rect(X-soundIcon_rect[0]/2-10, Y-soundIcon_rect[1]/2-10-20,soundIcon_rect[0]+20,soundIcon_rect[1]+20)
@@ -200,7 +211,7 @@ class PitchGame2:
             X = delta*i+offset-20
             Y = 500
             r = pygame.Rect(X+length/2, Y-width/2+100,40, 40)
-            uparrow_image = pygame.image.load('uparrow-removebg.png')
+            uparrow_image = pygame.image.load(resource_path('uparrow-removebg.png'))
             uparrow_image = pygame.transform.scale(uparrow_image, (40,40))
             buttons.append(Sprite(rect = r, rectColor = (173, 216, 230), image = uparrow_image, imagePos = (X+length/2, Y-width/2+100)))
         return buttons
@@ -215,7 +226,7 @@ class PitchGame2:
             X = delta*i+offset-20
             Y = 500
             r = pygame.Rect(X+length/2, Y+10+100,40, 40)
-            downarrow_image = pygame.image.load('downarrow-removebg.png')
+            downarrow_image = pygame.image.load(resource_path('downarrow-removebg.png'))
             downarrow_image = pygame.transform.scale(downarrow_image, (40,40))
             buttons.append(Sprite(rect = r, rectColor = (173, 216, 230), image = downarrow_image, imagePos = (X+length/2, Y+10+100)))
         return buttons

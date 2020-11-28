@@ -12,6 +12,9 @@ from endScreen import *
 parser = argparse.ArgumentParser()
 #parser.add_argument('-d','--difficulty',dest = "difficulty",action="store", help='difficulty level')    
     
+import sys
+import os
+
 
 def main():
     pygame.font.init() 
