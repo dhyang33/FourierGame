@@ -109,7 +109,7 @@ class scoreScreen:
         scoreSprite = Sprite(rect = r, rectColor = (173, 216, 230),text = f'Score: {self.score}', textPos = (middle_X-offset-10,middle_Y/2), textColor = (0,0,0))
         sprites = self.add_sprite("score",scoreSprite, sprites)
         
-        r = pygame.Rect(middle_X-offset,3*middle_Y/2,offset*2,70)
+        r = pygame.Rect(middle_X-offset,3*middle_Y/2,offset*2,60)
         continueSprite = Sprite(rect = r, rectColor = (0,255,0),text = f'Continue', textPos = (middle_X-offset,3*middle_Y/2), textColor = (0,0,0))
         sprites = self.add_sprite("next",continueSprite, sprites)
         return sprites

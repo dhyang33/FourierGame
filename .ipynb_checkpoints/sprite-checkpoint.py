@@ -9,7 +9,8 @@ class Sprite:
     textpos = None
     timer = -1
     count = 0
-    def __init__(self,rect=None, image=None, imagePos=None, rectColor=None, text = None, textPos = None, textColor = None):
+    textFontSize = 50
+    def __init__(self,rect=None, image=None, imagePos=None, rectColor=None, text = None, textPos = None, textColor = None, textFontSize=50):
         self.rect = rect
         self.image = image
         self.imagePos = imagePos
@@ -17,6 +18,7 @@ class Sprite:
         self.text = text
         self.textPos = textPos
         self.textColor = textColor
+        self.textFontSize = textFontSize
     
     def timedColorChange(self,newColor,numFrames):
         self.timer = numFrames
@@ -30,7 +32,7 @@ class Sprite:
         if self.image != None:
             screen.blit(self.image, self.imagePos)
         if self.text != None:
-            myfont = pygame.font.SysFont('Arial', 50)
+            myfont = pygame.font.SysFont('Arial', self.textFontSize)
             screen.blit(myfont.render(self.text, False, self.textColor), self.textPos)
             
     

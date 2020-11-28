@@ -5,7 +5,7 @@ import time
 import soundfile
 import random
 from sprite import *
-class scoreScreen:
+class endScreen:
     orig_sound = []
     num_pitches = -1
     score = None
@@ -104,13 +104,18 @@ class scoreScreen:
     
     def defineSprites(self, middle_X, middle_Y):
         sprites = {}
-        offset = 100
+        offset = 260
         r = pygame.Rect(0,0,1,1)
-        scoreSprite = Sprite(rect = r, rectColor = (173, 216, 230),text = f'Score: {self.score}', textPos = (middle_X-offset-10,middle_Y/2), textColor = (0,0,0))
+        scoreSprite = Sprite(rect = r, rectColor = (173, 216, 230),text = f'Game Over!', textPos = (middle_X-offset-10,middle_Y/2), textColor = (0,0,128),textFontSize=100)
         sprites = self.add_sprite("score",scoreSprite, sprites)
         
-        r = pygame.Rect(middle_X-offset,3*middle_Y/2,offset*2,60)
-        continueSprite = Sprite(rect = r, rectColor = (0,255,0),text = f'Continue', textPos = (middle_X-offset,3*middle_Y/2), textColor = (0,0,0))
+        r = pygame.Rect(0,0,1,1)
+        nameSprite = Sprite(rect = r, rectColor = (173, 216, 230),text = f'Your final score is {self.score}', textPos = (middle_X-260,middle_Y/2+120), textColor = (0,0,0))
+        sprites = self.add_sprite("names",nameSprite, sprites)
+        
+        
+        r = pygame.Rect(middle_X/2,3*middle_Y/2,middle_X,60)
+        continueSprite = Sprite(rect = r, rectColor = (255,0,0),text = f'End', textPos = (middle_X-40,3*middle_Y/2), textColor = (0,0,0))
         sprites = self.add_sprite("next",continueSprite, sprites)
         return sprites
     
