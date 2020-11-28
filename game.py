@@ -1,6 +1,7 @@
 import pygame
 import argparse
 import time
+import tutorial
 from pitchGame1 import *
 from pitchGame2 import *
 from scoreScreen import *
@@ -20,7 +21,10 @@ def main():
     # Set up the drawing window
     window = pygame.display.set_mode((X, Y), pygame.DOUBLEBUF)
     screen = pygame.display.get_surface()
-    pygame.display.set_caption('Fourier Game') 
+    pygame.display.set_caption('Fourier Game')
+
+    game = tutorial.TutorialScreen(tutorial.level1)
+    game.run(screen)
     
     game = PitchGame1(3)
     game.run(screen)
@@ -28,6 +32,8 @@ def main():
     game = scoreScreen(score1)
     game.run(screen)
     
+    game = tutorial.TutorialScreen(tutorial.level2)
+    game.run(screen)
     game = PitchGame2(3)
     game.run(screen)
     score2 = game.score
