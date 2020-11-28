@@ -15,6 +15,7 @@ from sprite import *
 class PitchGame2:
     orig_sound = []
     score = None
+    clicked = False
     num_pitches = -1
     possible_pitches = {"C4":262,
                            "D4":293,
@@ -57,17 +58,21 @@ class PitchGame2:
         self.DFT1 = np.abs(scipy.fftpack.fft(self.orig_sound[:22050]))
         self.DFT2 = self.DFT1[:1000]
         
+        
+        
     def pitchMaker(self,frequency=262,magnitude = 1,time = 1,sr = 22050):
         t = np.arange(0, time,1/sr)
         data = magnitude*np.sin(2*np.pi*frequency*t)
         return data
     
     def playSound(self,data,sr=22050):
+        fself.clicked = True
         soundfile.write("orig_sound.wav",data,sr)
         sound = pygame.mixer.Sound('orig_sound.wav')
         sound.set_volume(0.5)
         sound.play()
-        time.sleep(3)
+        time.sleep(4)
+        self.clicked = False
         
     def playConstructed(self,sprites,sr=22050):
         freq1 = int(sprites['b1'].text.split(" ")[0])
@@ -77,11 +82,13 @@ class PitchGame2:
         data2 = np.array(self.pitchMaker(freq2,time=2))
         data3 = np.array(self.pitchMaker(freq3,time=2))
         data = data1+data2+data3
+        self.clicked = True
         soundfile.write("constructed_sound.wav",data,sr)
         sound = pygame.mixer.Sound('constructed_sound.wav')
         sound.set_volume(0.5)
         sound.play()
-        time.sleep(3)
+        time.sleep(4)
+        self.clicked = False
         
     def drawSprites(self, screen, sprites):
         for sprite in sprites:
@@ -161,9 +168,14 @@ class PitchGame2:
         soundIcon_image = pygame.image.load('sound.png')
         soundIcon_image = pygame.transform.scale(soundIcon_image, (100,100))
         soundIcon_rect = soundIcon_image.get_rect().size
-        r = pygame.Rect(X-soundIcon_rect[0]/2-10, Y-soundIcon_rect[1]/2-10,soundIcon_rect[0]+20,soundIcon_rect[1]+20)
-        soundIcon = Sprite(r, soundIcon_image, (X-soundIcon_rect[0]/2, Y-soundIcon_rect[1]/2), (255,153,0))
+        r = pygame.Rect(X-soundIcon_rect[0]/2-10, Y-soundIcon_rect[1]/2-10-20,soundIcon_rect[0]+20,soundIcon_rect[1]+20)
+        soundIcon = Sprite(r, soundIcon_image, (X-soundIcon_rect[0]/2, Y-soundIcon_rect[1]/2-20), (255,153,0))
         return soundIcon
+    
+    def getTitleSprite(self, middle_X):
+        r = pygame.Rect(0,0,0,0)
+        length = 800
+        return Sprite(rect = r, rectColor = (255,255,255), text = "Identify the frequencies in the sound.", textPos = (middle_X-length/2,20), textColor = (0,0,0))
     
     def getPitchSprites(self, middle_X):
         buttons = []
@@ -174,8 +186,8 @@ class PitchGame2:
             width = 100
             X = delta*i+offset-20
             Y = 500
-            r = pygame.Rect(X-length/2, Y-width/2,length, width)
-            buttons.append(Sprite(rect = r, rectColor = (255,255,255), text = "262 Hz", textPos = (X-length/4-20,Y-width/4), textColor = (0,0,0)))
+            r = pygame.Rect(X-length/2, Y-width/2+100,length, width)
+            buttons.append(Sprite(rect = r, rectColor = (255,255,255), text = "262 Hz", textPos = (X-length/4-20,Y-width/4+100), textColor = (0,0,0)))
         return buttons
     
     def getUpButtonSprites(self, middle_X):
@@ -187,10 +199,10 @@ class PitchGame2:
             width = 100
             X = delta*i+offset-20
             Y = 500
-            r = pygame.Rect(X+length/2, Y-width/2,40, 40)
+            r = pygame.Rect(X+length/2, Y-width/2+100,40, 40)
             uparrow_image = pygame.image.load('uparrow-removebg.png')
             uparrow_image = pygame.transform.scale(uparrow_image, (40,40))
-            buttons.append(Sprite(rect = r, rectColor = (173, 216, 230), image = uparrow_image, imagePos = (X+length/2, Y-width/2)))
+            buttons.append(Sprite(rect = r, rectColor = (173, 216, 230), image = uparrow_image, imagePos = (X+length/2, Y-width/2+100)))
         return buttons
     
     def getDownButtonSprites(self, middle_X):
@@ -202,10 +214,10 @@ class PitchGame2:
             width = 100
             X = delta*i+offset-20
             Y = 500
-            r = pygame.Rect(X+length/2, Y+10,40, 40)
+            r = pygame.Rect(X+length/2, Y+10+100,40, 40)
             downarrow_image = pygame.image.load('downarrow-removebg.png')
             downarrow_image = pygame.transform.scale(downarrow_image, (40,40))
-            buttons.append(Sprite(rect = r, rectColor = (173, 216, 230), image = downarrow_image, imagePos = (X+length/2, Y+10)))
+            buttons.append(Sprite(rect = r, rectColor = (173, 216, 230), image = downarrow_image, imagePos = (X+length/2, Y+10+100)))
         return buttons
     
     def getPlaySprite(self,middle_X):
@@ -247,7 +259,7 @@ class PitchGame2:
         offset_X = 20
         offset_Y = 20
         r = pygame.Rect(0,0,1,1)
-        graphSprite = Sprite(rect = r, rectColor = (173, 216, 230),image = img, imagePos = (offset_X,offset_Y))
+        graphSprite = Sprite(rect = r, rectColor = (173, 216, 230),image = img, imagePos = (offset_X,offset_Y+100))
         return graphSprite
     
     def getGraphSprite2(self, middle_X):
@@ -270,12 +282,17 @@ class PitchGame2:
         offset_X = 1360-20-600
         offset_Y = 20
         r = pygame.Rect(0,0,1,1)
-        graphSprite = Sprite(rect = r, rectColor = (173, 216, 230),image = img, imagePos = (offset_X,offset_Y))
+        graphSprite = Sprite(rect = r, rectColor = (173, 216, 230),image = img, imagePos = (offset_X,offset_Y+100))
         return graphSprite
 
     
     def defineSprites(self, middle_X, middle_Y):
         sprites = {}
+        titleSprite = self.getTitleSprite(middle_X)
+        sprites = self.add_sprite("title",titleSprite, sprites)
+        
+        soundIcon = self.getSoundSprite(middle_X)
+        sprites = self.add_sprite("soundIcon",soundIcon, sprites)
         
         graph = self.getGraphSprite1(middle_X)
         sprites = self.add_sprite("graph1",graph,sprites)

@@ -5,7 +5,7 @@ import time
 import soundfile
 import random
 from sprite import *
-class scoreScreen:
+class startScreen:
     orig_sound = []
     num_pitches = -1
     score = None
@@ -25,8 +25,8 @@ class scoreScreen:
                            "A5":880,
                            "B5":989}
     notes = []
-    def __init__(self,score):
-        self.score = score
+    def __init__(self):
+        pass
         
     def pitchMaker(self,frequency=262,magnitude = 1,time = 1,sr = 22050):
         t = np.arange(0, time,1/sr)
@@ -104,13 +104,17 @@ class scoreScreen:
     
     def defineSprites(self, middle_X, middle_Y):
         sprites = {}
-        offset = 100
+        offset = 300
         r = pygame.Rect(0,0,1,1)
-        scoreSprite = Sprite(rect = r, rectColor = (173, 216, 230),text = f'Score: {self.score}', textPos = (middle_X-offset-10,middle_Y/2), textColor = (0,0,0))
+        scoreSprite = Sprite(rect = r, rectColor = (173, 216, 230),text = f'Fourier Game', textPos = (middle_X-offset-10,middle_Y/2), textColor = (0,0,128),textFontSize=100)
         sprites = self.add_sprite("score",scoreSprite, sprites)
         
+        r = pygame.Rect(0,0,1,1)
+        nameSprite = Sprite(rect = r, rectColor = (173, 216, 230),text = f'by Daniel Yang, Thomas Fleming, Xander Hirsch', textPos = (middle_X-550,middle_Y/2+120), textColor = (0,0,0))
+        sprites = self.add_sprite("names",nameSprite, sprites)
+        
         r = pygame.Rect(middle_X-offset,3*middle_Y/2,offset*2,60)
-        continueSprite = Sprite(rect = r, rectColor = (0,255,0),text = f'Continue', textPos = (middle_X-offset,3*middle_Y/2), textColor = (0,0,0))
+        continueSprite = Sprite(rect = r, rectColor = (0,255,0),text = f'Play', textPos = (middle_X-offset+250,3*middle_Y/2), textColor = (0,0,0))
         sprites = self.add_sprite("next",continueSprite, sprites)
         return sprites
     
