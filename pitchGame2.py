@@ -48,7 +48,6 @@ class PitchGame2:
               (self.possible_pitches[self.notes[1]]-self.possible_pitches[self.notes[0]])/self.possible_pitches[self.notes[0]]< 0.2 or
               (self.possible_pitches[self.notes[2]]-self.possible_pitches[self.notes[1]])/self.possible_pitches[self.notes[1]]< 0.2):
             self.notes = random.sample(self.possible_pitches.keys(),self.num_pitches)
-        print(self.notes)
         freqs = [self.possible_pitches[note] for note in self.notes]
         amplitudes = []
         for i in range(len(freqs)):

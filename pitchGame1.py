@@ -10,7 +10,6 @@ from sprite import *
 
 def resource_path(relative_path):
     base_path = os.path.abspath("./assets")
-    print(os.path.join(base_path, relative_path))
     return os.path.join(base_path, relative_path)
 
 class PitchGame1:
@@ -40,9 +39,7 @@ class PitchGame1:
               (self.possible_pitches[self.notes[1]]-self.possible_pitches[self.notes[0]])/self.possible_pitches[self.notes[0]]< 0.2 or
               (self.possible_pitches[self.notes[2]]-self.possible_pitches[self.notes[1]])/self.possible_pitches[self.notes[1]]< 0.2):
             self.notes = random.sample(self.possible_pitches.keys(),self.num_pitches)
-        print(self.notes)
         freqs = [self.possible_pitches[note] for note in self.notes]
-        print(freqs)
         amplitudes = []
         for i in range(len(freqs)):
             #random_amp = random.random()
