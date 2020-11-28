@@ -27,23 +27,23 @@ def main():
     screen = pygame.display.get_surface()
     pygame.display.set_caption('Fourier Game')
 
-    game = tutorial.TutorialScreen(tutorial.level1)
-    game.run(screen)
     
     game = startScreen()
     game.run(screen)
     
     # Game 1
+    game = tutorial.TutorialScreen(tutorial.level1)
+    game.run(screen)
     game = PitchGame1(3)
     game.run(screen)
     score1 = game.score
     game = scoreScreen(score1)
     game.run(screen)
     
-    game = tutorial.TutorialScreen(tutorial.level2)
-    game.run(screen)
     
     #Game 2
+    game = tutorial.TutorialScreen(tutorial.level2)
+    game.run(screen)
     game = PitchGame2(3)
     game.run(screen)
     score2 = game.score
@@ -51,6 +51,8 @@ def main():
     game.run(screen)
     
     #Game 3
+    game = tutorial.TutorialScreen(tutorial.level3)
+    game.run(screen)
     game = PitchGame3(4)
     game.run(screen)
     score3 = game.score
@@ -58,6 +60,8 @@ def main():
     game.run(screen)
     
     #Game 4
+    game = tutorial.TutorialScreen(tutorial.level4)
+    game.run(screen)
     game = PitchGame4(4)
     game.run(screen)
     score4 = game.score

@@ -16,9 +16,9 @@ level2 = "We've received a call from Joseph Fourier. He has analyzed the " + \
     "time-domain signal with his Fourier Transformer and provided us with " + \
     "a frequency-domain plot. Now can you identify the notes?"
 
-level3 = "Code Blue! We have received a more complex signal: five notes in " + \
+level3 = "Code Blue! We have received a more complex signal: four notes in " + \
     "sequence! We're trying to contact Fourier, but until we can reach " + \
-    "him, can you try to identify the pitches from the time-domain plot?"
+    "him, can you try to identify the pitches from the audio signal?"
 
 level4 = "We have finally reached Fourier. He has provided us with a " + \
     "spectrogram of the signal. Now are you able to determine the sequence " + \
