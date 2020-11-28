@@ -16,13 +16,9 @@ import sys
 from sprite import *
 
 def resource_path(relative_path):
-    try:
-    # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
+    base_path = os.path.abspath("./assets")
     return os.path.join(base_path, relative_path)
+
 class PitchGame2:
     orig_sound = []
     score = None
@@ -77,7 +73,7 @@ class PitchGame2:
         return data
     
     def playSound(self,data,sr=22050):
-        fself.clicked = True
+        self.clicked = True
         soundfile.write(resource_path("orig_sound.wav"),data,sr)
         sound = pygame.mixer.Sound(resource_path('orig_sound.wav'))
         sound.set_volume(0.5)

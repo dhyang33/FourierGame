@@ -5,6 +5,7 @@ import time
 import soundfile
 import random
 from sprite import *
+
 class endScreen:
     orig_sound = []
     num_pitches = -1
@@ -34,8 +35,8 @@ class endScreen:
         return data
     
     def playSound(self,data,sr=22050):
-        soundfile.write("orig_sound.wav",data,sr)
-        sound = pygame.mixer.Sound('orig_sound.wav')
+        soundfile.write("assets/orig_sound.wav",data,sr)
+        sound = pygame.mixer.Sound('assets/orig_sound.wav')
         sound.set_volume(0.5)
         sound.play()
         time.sleep(3)
@@ -48,8 +49,8 @@ class endScreen:
         data2 = np.array(self.pitchMaker(freq2,time=2))
         data3 = np.array(self.pitchMaker(freq3,time=2))
         data = data1+data2+data3
-        soundfile.write("constructed_sound.wav",data,sr)
-        sound = pygame.mixer.Sound('constructed_sound.wav')
+        soundfile.write("assets/constructed_sound.wav",data,sr)
+        sound = pygame.mixer.Sound('assets/constructed_sound.wav')
         sound.set_volume(0.5)
         sound.play()
         time.sleep(3)

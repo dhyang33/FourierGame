@@ -9,12 +9,8 @@ import sys
 from sprite import *
 
 def resource_path(relative_path):
-    try:
-    # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
+    base_path = os.path.abspath("./assets")
+    print(os.path.join(base_path, relative_path))
     return os.path.join(base_path, relative_path)
 
 class PitchGame1:
